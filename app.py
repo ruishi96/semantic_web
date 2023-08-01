@@ -65,9 +65,12 @@ bottom_container = \
         [
             dbc.Col(
                 [
-                    html.Img(src='/assets/brandeis-logo.png', style={'height': '10%'}),
+                    html.Img(src='/assets/brandeis-logo.png', style={'height': '15%'}),
                 ],
                 width=2,
+                style={'height': '300px',
+                       'text-align': 'left'},
+                align="center",
             ),
             dbc.Col(
                 [
@@ -75,8 +78,24 @@ bottom_container = \
                     html.H6("Dashboard developed by faculty and students of the "
                             "Brandeis University International Business School", className=footer_format)
                 ],
-                width=10,
+                width=7,
+                style={'height': '200px',
+                       'text-align': 'left',
+                       'align-items': 'center'},
             ),
+            dbc.Col(
+                dbc.AccordionItem(
+                    [
+                        ThemeChangerAIO(aio_id="theme"),
+                    ],
+                    title="Theme",
+                    className=accordian_item_format
+                    ),
+                width = 3,
+                style={'text-align': 'right',
+                       'height': '300px'},
+                align="center"
+            )
         ]
     )
 
@@ -138,13 +157,6 @@ sidebar_container = html.Div(
                         ),
                     ],
                     title="Ontology",
-                    className=accordian_item_format
-                ),
-                dbc.AccordionItem(
-                    [
-                        ThemeChangerAIO(aio_id="theme"),
-                    ],
-                    title="Theme",
                     className=accordian_item_format
                 ),
             ],
@@ -271,7 +283,40 @@ tab_query = dbc.Tab(
 body_container = dbc.Card(
     dbc.Tabs([tab_view, tab_query])
 )
-
+####################################################################################################################
+# welcoming page
+#
+def launching_modal():
+    return dbc.Modal(
+        [
+            dbc.ModalHeader("Welcome to Semantic Web Dashboard!"),
+            dbc.ModalBody([html.P("The interactive dashboard is developed by the faculty and " \
+                                  "students of the Brandeis University International Business School " \
+                                  "in collaboration with Fidelity Center for Applied Technology(FCAT)."),
+                           html.Br(),
+                           html.P("The purpose of this dashboard is to demonstrate the visualization of " \
+                                  "the ontology database. Feel free to use our dashboard to explore the " \
+                                  "complex ontology database to unlock new insights and drive meaningful " \
+                                  "discoveries."),
+                           ]),
+            dbc.ModalFooter(
+                dbc.Button("Close", id="close-modal-button", className="ml-auto")
+            ),
+        ],
+        id="modal",
+        centered=True,
+        scrollable=True,
+        is_open=True,  # Set to True to show the modal on app launch
+    )
+@app.callback(
+    Output("modal", "is_open"),
+    [Input("close-modal-button", "n_clicks")],
+    [State("modal", "is_open")],
+)
+def close_modal(n, is_open):
+    if n:
+        return False
+    return is_open
 ####################################################################################################################
 # layout
 #
@@ -289,6 +334,7 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         body_container,
+                        launching_modal()
                     ],
                     width=10,
                 ),
@@ -298,8 +344,6 @@ app.layout = dbc.Container(
     ],
     fluid=True,
 )
-
-
 ####################################################################################################################
 # callbacks
 #
